@@ -1,7 +1,20 @@
+import { NextRequest } from "next/server";
 import { apiDatas } from "./data";
 
-export async function GET() {
-  return new Response(JSON.stringify(apiDatas));
+export async function GET(req: NextRequest) {
+  let seachParams = req.nextUrl.searchParams;
+  let search = seachParams.get("search");
+  let filteredData = search
+    ? apiDatas.filter((data) => {
+        return data.title.toLowerCase().includes(search.toLowerCase());
+      })
+    : apiDatas;
+  return new Response(JSON.stringify(filteredData), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
 
 export async function POST(request: Request) {
